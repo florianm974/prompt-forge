@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PromptForge</title>
+  <meta name="description" content="Advanced AI prompt builder — chatbot & image generation."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black:   #070707;
+      --surface: #0f0f0f;
+      --surface2: #161616;
+      --white:   #f0ede8;
+      --muted:   rgba(240,237,232,0.38);
+      --dim:     rgba(240,237,232,0.15);
+      --border:  rgba(240,237,232,0.1);
+      --border2: rgba(240,237,232,0.18);
+      --accent:  rgba(240,237,232,0.7);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Cormorant Garamond', serif;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      opacity: 0.025; pointer-events: none; z-index: 0;
+    }
+
+    .floral-bg {
+      position: fixed; inset: 0;
+      width: 100%; height: 100%;
+      pointer-events: none; opacity: 0.04; z-index: 0;
+    }
+
+    /* ── Layout ── */
+    .app { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
+
+    /* ── Header ── */
+    .header { text-align: center; margin-bottom: 3rem; animation: fadeDown 0.9s cubic-bezier(0.22,1,0.36,1) both; }
+
+    .logo {
+      font-family: 'Cinzel', serif;
+      font-size: 28px;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--white);
+      margin-bottom: 0.4rem;
+    }
+
+    .logo span { color: var(--muted); }
+
+    .subtitle {
+      font-size: 14px;
+      font-style: italic;
+      font-weight: 300;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    .divider {
+      display: flex; align-items: center; gap: 10px;
+      margin: 1.4rem auto 0; max-width: 200px;
+    }
+    .divider-line { flex: 1; height: 0.5px; background: var(--border); }
+    .divider-diamond { width: 5px; height: 5px; border: 0.5px solid rgba(240,237,232,0.25); transform: rotate(45deg); flex-shrink: 0; }
+
+    /* ── Mode tabs ── */
+    .mode-tabs {
+      display: flex; gap: 0; margin-bottom: 2.5rem;
+      border: 0.5px solid var(--border); border-radius: 1px;
+      animation: fadeDown 0.9s 0.1s cubic-bezier(0.22,1,0.36,1) both;
+      overflow: hidden;
+    }
+
+    .mode-tab {
+      flex: 1; padding: 12px 20px;
+      background: transparent; border: none;
+      font-family: 'Cinzel', serif; font-size: 11px;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--muted); cursor: pointer;
+      transition: background 0.3s, color 0.3s;
+      border-right: 0.5px solid var(--border);
+    }
+    .mode-tab:last-child { border-right: none; }
+    .mode-tab.active { background: rgba(240,237,232,0.07); color: var(--white); }
+    .mode-tab:hover:not(.active) { background: rgba(240,237,232,0.03); color: rgba(240,237,232,0.6); }
+
+    /* ── Main grid ── */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      animation: fadeUp 0.9s 0.2s cubic-bezier(0.22,1,0.36,1) both;
+    }
+
+    @media (max-width: 640px) { .main-grid { grid-template-columns: 1fr; } }
+
+    /* ── Panel ── */
+    .panel {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: 1px;
+      padding: 1.5rem;
+    }
+
+    .panel-title {
+      font-family: 'Cinzel', serif;
+      font-size: 10px; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--muted);
+      margin-bottom: 1.2rem;
+    }
+
+    /* ── Fields ── */
+    .field { margin-bottom: 1rem; }
+
+    .field label {
+      display: block;
+      font-family: 'Cinzel', serif;
+      font-size: 10px; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      background: var(--surface2);
+      border: 0.5px solid var(--border);
+      border-radius: 1px;
+      color: var(--white);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 14px; font-style: italic;
+      padding: 9px 12px;
+      outline: none;
+      transition: border-color 0.25s;
+      resize: none;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus { border-color: var(--border2); }
+
+    .field select option { background: #111; }
+
+    /* ── Tags input ── */
+    .tags-wrap {
+      background: var(--surface2);
+      border: 0.5px solid var(--border);
+      border-radius: 1px;
+      padding: 6px 10px;
+      display: flex; flex-wrap: wrap; gap: 6px;
+      min-height: 42px; align-items: center;
+      transition: border-color 0.25s; cursor: text;
+    }
+    .tags-wrap:focus-within { border-color: var(--border2); }
+
+    .tag {
+      background: rgba(240,237,232,0.08);
+      border: 0.5px solid var(--border2);
+      border-radius: 1px;
+      padding: 2px 8px;
+      font-size: 12px; font-style: italic; color: var(--white);
+      display: flex; align-items: center; gap: 5px;
+    }
+    .tag-remove {
+      cursor: pointer; color: var(--muted); font-style: normal;
+      font-size: 11px; line-height: 1;
+      transition: color 0.2s;
+    }
+    .tag-remove:hover { color: var(--white); }
+
+    .tags-input {
+      background: transparent; border: none; outline: none;
+      color: var(--white); font-family: 'Cormorant Garamond', serif;
+      font-size: 14px; font-style: italic;
+      flex: 1; min-width: 80px; padding: 2px 0;
+    }
+
+    /* ── Templates ── */
+    .templates {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      margin-bottom: 1.2rem;
+    }
+
+    .tpl-btn {
+      background: transparent;
+      border: 0.5px solid var(--border);
+      border-radius: 1px;
+      padding: 5px 12px;
+      font-family: 'Cinzel', serif;
+      font-size: 9px; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--muted);
+      cursor: pointer;
+      transition: background 0.25s, border-color 0.25s, color 0.25s;
+    }
+    .tpl-btn:hover { background: rgba(240,237,232,0.06); border-color: var(--border2); color: var(--white); }
+
+    /* ── Output panel ── */
+    .output-panel {
+      grid-column: 1 / -1;
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: 1px;
+      padding: 1.5rem;
+    }
+
+    .output-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .output-title {
+      font-family: 'Cinzel', serif;
+      font-size: 10px; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--muted);
+    }
+
+    .output-actions { display: flex; gap: 8px; }
+
+    .action-btn {
+      background: transparent;
+      border: 0.5px solid var(--border);
+      border-radius: 1px;
+      padding: 6px 14px;
+      font-family: 'Cinzel', serif;
+      font-size: 9px; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--muted);
+      cursor: pointer;
+      transition: background 0.25s, border-color 0.25s, color 0.25s;
+    }
+    .action-btn:hover { background: rgba(240,237,232,0.07); border-color: var(--border2); color: var(--white); }
+    .action-btn.copied { color: var(--white); border-color: var(--border2); }
+
+    .output-text {
+      background: var(--surface2);
+      border: 0.5px solid var(--border);
+      border-radius: 1px;
+      padding: 1.2rem;
+      font-size: 15px;
+      font-style: italic;
+      color: var(--white);
+      line-height: 1.8;
+      min-height: 100px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .output-placeholder { color: var(--dim); }
+
+    /* ── History ── */
+    .history-section {
+      margin-top: 2rem;
+      animation: fadeUp 0.9s 0.35s cubic-bezier(0.22,1,0.36,1) both;
+    }
+
+    .history-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: 'Cinzel', serif;
+      font-size: 10px; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--muted);
+    }
+
+    .history-list { display: flex; flex-direction: column; gap: 8px; }
+
+    .history-item {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: 1px;
+      padding: 12px 16px;
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+      cursor: pointer;
+      transition: background 0.25s, border-color 0.25s;
+    }
+    .history-item:hover { background: rgba(240,237,232,0.04); border-color: var(--border2); }
+
+    .history-text {
+      font-size: 13px; font-style: italic; color: var(--muted);
+      flex: 1; overflow: hidden;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+      line-height: 1.5;
+    }
+
+    .history-meta {
+      font-family: 'Cinzel', serif;
+      font-size: 9px; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--dim);
+      white-space: nowrap; flex-shrink: 0;
+    }
+
+    .history-empty {
+      font-size: 13px; font-style: italic; color: var(--dim);
+      text-align: center; padding: 1.5rem;
+    }
+
+    /* ── Char counter ── */
+    .char-count {
+      font-size: 11px; color: var(--dim);
+      text-align: right; margin-top: 4px;
+      font-style: italic;
+    }
+
+    /* ── Mode panels ── */
+    .mode-panel { display: none; }
+    .mode-panel.active { display: contents; }
+
+    /* ── Animations ── */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<svg class="floral-bg" viewBox="0 0 800 900" xmlns="http://www.w3.org/2000/svg" fill="white" aria-hidden="true">
+  <g><path d="M55,110 Q80,55 125,78 Q92,102 55,110Z"/><path d="M125,78 Q162,38 182,78 Q152,90 125,78Z"/><circle cx="138" cy="108" r="5"/><path d="M90,148 Q112,126 134,142 Q112,154 90,148Z"/><circle cx="140" cy="160" r="6"/><line x1="140" y1="166" x2="138" y2="215" stroke="white" stroke-width="0.8"/><path d="M138,186 Q126,180 123,188 Q132,193 138,186Z"/><path d="M138,200 Q150,194 152,202 Q145,208 138,200Z"/></g>
+  <g><path d="M632,65 Q655,25 688,45 Q662,65 632,65Z"/><path d="M688,45 Q715,18 730,45 Q706,56 688,45Z"/><circle cx="682" cy="78" r="5.5"/><line x1="682" y1="84" x2="680" y2="138" stroke="white" stroke-width="0.8"/><path d="M680,108 Q665,102 663,112 Q672,116 680,108Z"/><path d="M660,162 Q678,138 700,152 Q684,166 660,162Z"/><circle cx="700" cy="174" r="5"/></g>
+  <g opacity="0.5"><path d="M42,740 Q62,698 96,716 Q70,733 42,740Z"/><circle cx="90" cy="750" r="4.5"/><line x1="90" y1="755" x2="88" y2="808" stroke="white" stroke-width="0.8"/></g>
+  <g opacity="0.5"><path d="M692,798 Q708,764 736,778 Q714,793 692,798Z"/><circle cx="730" cy="808" r="4.5"/><line x1="730" y1="812" x2="728" y2="860" stroke="white" stroke-width="0.8"/></g>
+</svg>
+
+<div class="app">
+
+  <header class="header">
+    <h1 class="logo">Prompt<span>Forge</span></h1>
+    <p class="subtitle">craft precise AI prompts — chatbot & image</p>
+    <div class="divider"><div class="divider-line"></div><div class="divider-diamond"></div><div class="divider-line"></div></div>
+  </header>
+
+  <div class="mode-tabs">
+    <button class="mode-tab active" onclick="switchMode('chat')">◈ &nbsp;Chatbot</button>
+    <button class="mode-tab" onclick="switchMode('image')">◈ &nbsp;Image Generation</button>
+  </div>
+
+  <div class="main-grid" id="builder">
+
+    <!-- CHATBOT MODE -->
+    <div class="mode-panel active" id="panel-chat">
+
+      <div class="panel">
+        <div class="panel-title">Templates</div>
+        <div class="templates">
+          <button class="tpl-btn" onclick="loadTemplate('chat','explain')">Explain concept</button>
+          <button class="tpl-btn" onclick="loadTemplate('chat','debug')">Debug code</button>
+          <button class="tpl-btn" onclick="loadTemplate('chat','write')">Write content</button>
+          <button class="tpl-btn" onclick="loadTemplate('chat','analyze')">Analyze text</button>
+          <button class="tpl-btn" onclick="loadTemplate('chat','translate')">Translate</button>
+        </div>
+
+        <div class="field">
+          <label>Role / Persona</label>
+          <input type="text" id="chat-role" placeholder="e.g. expert software engineer, creative writer..." oninput="buildPrompt()"/>
+        </div>
+        <div class="field">
+          <label>Context</label>
+          <textarea id="chat-context" rows="2" placeholder="Background information the AI should know..." oninput="buildPrompt()"></textarea>
+        </div>
+        <div class="field">
+          <label>Task</label>
+          <textarea id="chat-task" rows="3" placeholder="What do you want the AI to do?" oninput="buildPrompt()"></textarea>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Refinements</div>
+        <div class="field">
+          <label>Output Format</label>
+          <select id="chat-format" onchange="buildPrompt()">
+            <option value="">— none —</option>
+            <option value="bullet points">Bullet points</option>
+            <option value="numbered list">Numbered list</option>
+            <option value="markdown">Markdown</option>
+            <option value="plain text">Plain text</option>
+            <option value="JSON">JSON</option>
+            <option value="a table">Table</option>
+            <option value="a step-by-step guide">Step-by-step guide</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Tone</label>
+          <select id="chat-tone" onchange="buildPrompt()">
+            <option value="">— none —</option>
+            <option value="professional">Professional</option>
+            <option value="casual">Casual</option>
+            <option value="technical">Technical</option>
+            <option value="concise">Concise</option>
+            <option value="detailed">Detailed</option>
+            <option value="creative">Creative</option>
+            <option value="academic">Academic</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Language</label>
+          <select id="chat-lang" onchange="buildPrompt()">
+            <option value="">— default —</option>
+            <option value="English">English</option>
+            <option value="French">French</option>
+            <option value="Spanish">Spanish</option>
+            <option value="German">German</option>
+            <option value="Italian">Italian</option>
+            <option value="Portuguese">Portuguese</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Constraints (press Enter to add)</label>
+          <div class="tags-wrap" id="chat-constraints-wrap" onclick="document.getElementById('chat-constraints-input').focus()">
+            <input class="tags-input" id="chat-constraints-input" placeholder="e.g. max 200 words..." onkeydown="handleTagInput(event,'chat-constraints')"/>
+          </div>
+        </div>
+        <div class="field">
+          <label>Examples (press Enter to add)</label>
+          <div class="tags-wrap" id="chat-examples-wrap" onclick="document.getElementById('chat-examples-input').focus()">
+            <input class="tags-input" id="chat-examples-input" placeholder="e.g. like Einstein explaining..." onkeydown="handleTagInput(event,'chat-examples')"/>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- IMAGE MODE -->
+    <div class="mode-panel" id="panel-image">
+
+      <div class="panel">
+        <div class="panel-title">Templates</div>
+        <div class="templates">
+          <button class="tpl-btn" onclick="loadTemplate('image','portrait')">Portrait</button>
+          <button class="tpl-btn" onclick="loadTemplate('image','landscape')">Landscape</button>
+          <button class="tpl-btn" onclick="loadTemplate('image','concept')">Concept art</button>
+          <button class="tpl-btn" onclick="loadTemplate('image','product')">Product shot</button>
+          <button class="tpl-btn" onclick="loadTemplate('image','abstract')">Abstract</button>
+        </div>
+
+        <div class="field">
+          <label>Subject</label>
+          <textarea id="img-subject" rows="2" placeholder="What is the main subject of the image?" oninput="buildPrompt()"></textarea>
+        </div>
+        <div class="field">
+          <label>Style</label>
+          <select id="img-style" onchange="buildPrompt()">
+            <option value="">— none —</option>
+            <option value="photorealistic">Photorealistic</option>
+            <option value="digital art">Digital art</option>
+            <option value="oil painting">Oil painting</option>
+            <option value="watercolor">Watercolor</option>
+            <option value="anime">Anime</option>
+            <option value="cinematic">Cinematic</option>
+            <option value="concept art">Concept art</option>
+            <option value="3D render">3D render</option>
+            <option value="illustration">Illustration</option>
+            <option value="dark fantasy">Dark fantasy</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Mood / Atmosphere</label>
+          <select id="img-mood" onchange="buildPrompt()">
+            <option value="">— none —</option>
+            <option value="dramatic">Dramatic</option>
+            <option value="ethereal">Ethereal</option>
+            <option value="dark and moody">Dark & moody</option>
+            <option value="warm and cozy">Warm & cozy</option>
+            <option value="mysterious">Mysterious</option>
+            <option value="energetic">Energetic</option>
+            <option value="serene">Serene</option>
+            <option value="epic">Epic</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Technical Details</div>
+        <div class="field">
+          <label>Lighting</label>
+          <select id="img-lighting" onchange="buildPrompt()">
+            <option value="">— none —</option>
+            <option value="golden hour lighting">Golden hour</option>
+            <option value="studio lighting">Studio lighting</option>
+            <option value="dramatic chiaroscuro lighting">Chiaroscuro</option>
+            <option value="soft diffused lighting">Soft diffused</option>
+            <option value="neon lighting">Neon</option>
+            <option value="moonlight">Moonlight</option>
+            <option value="backlit">Backlit</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Composition</label>
+          <select id="img-composition" onchange="buildPrompt()">
+            <option value="">— none —</option>
+            <option value="close-up portrait">Close-up</option>
+            <option value="wide shot">Wide shot</option>
+            <option value="aerial view">Aerial view</option>
+            <option value="low angle shot">Low angle</option>
+            <option value="symmetrical composition">Symmetrical</option>
+            <option value="rule of thirds">Rule of thirds</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Quality Tags (press Enter)</label>
+          <div class="tags-wrap" id="img-quality-wrap" onclick="document.getElementById('img-quality-input').focus()">
+            <input class="tags-input" id="img-quality-input" placeholder="e.g. 8k, highly detailed..." onkeydown="handleTagInput(event,'img-quality')"/>
+          </div>
+        </div>
+        <div class="field">
+          <label>Negative Prompt (press Enter)</label>
+          <div class="tags-wrap" id="img-negative-wrap" onclick="document.getElementById('img-negative-input').focus()">
+            <input class="tags-input" id="img-negative-input" placeholder="e.g. blurry, low quality..." onkeydown="handleTagInput(event,'img-negative')"/>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- OUTPUT -->
+    <div class="output-panel">
+      <div class="output-header">
+        <span class="output-title">Generated Prompt</span>
+        <div class="output-actions">
+          <button class="action-btn" id="clear-btn" onclick="clearAll()">Clear</button>
+          <button class="action-btn" id="save-btn" onclick="saveToHistory()">Save</button>
+          <button class="action-btn" id="copy-btn" onclick="copyPrompt()">Copy</button>
+        </div>
+      </div>
+      <div class="output-text" id="output">
+        <span class="output-placeholder">Your prompt will appear here as you fill in the fields above...</span>
+      </div>
+      <div class="char-count" id="char-count"></div>
+    </div>
+
+  </div>
+
+  <!-- HISTORY -->
+  <div class="history-section">
+    <div class="history-header">
+      <span class="section-title">History</span>
+      <button class="action-btn" onclick="clearHistory()">Clear all</button>
+    </div>
+    <div class="history-list" id="history-list">
+      <div class="history-empty">No saved prompts yet.</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let currentMode = 'chat';
+  const tags = { 'chat-constraints': [], 'chat-examples': [], 'img-quality': [], 'img-negative': [] };
+
+  const templates = {
+    chat: {
+      explain: { role: 'expert teacher', context: '', task: 'Explain [concept] in simple terms, using real-world analogies', format: 'plain text', tone: 'casual', lang: '' },
+      debug:   { role: 'senior software engineer', context: 'I am working on [language/framework]', task: 'Debug the following code and explain what is wrong:\n\n[paste your code here]', format: 'markdown', tone: 'technical', lang: '' },
+      write:   { role: 'professional copywriter', context: 'Target audience: [describe your audience]', task: 'Write [type of content] about [topic]', format: 'plain text', tone: 'professional', lang: '' },
+      analyze: { role: 'critical analyst', context: '', task: 'Analyze the following text and identify the main themes, tone, and key arguments:\n\n[paste your text here]', format: 'bullet points', tone: 'academic', lang: '' },
+      translate: { role: 'professional translator', context: '', task: 'Translate the following text to [target language], preserving the original tone and style:\n\n[paste your text here]', format: 'plain text', tone: 'professional', lang: '' },
+    },
+    image: {
+      portrait:  { subject: 'a young woman with sharp features and intense eyes', style: 'cinematic', mood: 'mysterious', lighting: 'dramatic chiaroscuro lighting', composition: 'close-up portrait', quality: ['hyperrealistic','8k','sharp focus'], negative: ['blurry','low quality','distorted'] },
+      landscape: { subject: 'vast mountain range at sunrise, ancient forest in foreground', style: 'photorealistic', mood: 'ethereal', lighting: 'golden hour lighting', composition: 'wide shot', quality: ['8k','photorealistic','detailed'], negative: ['people','buildings','cars'] },
+      concept:   { subject: 'futuristic city floating in the clouds, bioluminescent plants', style: 'concept art', mood: 'epic', lighting: 'soft diffused lighting', composition: 'wide shot', quality: ['trending on artstation','highly detailed','4k'], negative: ['blurry','low resolution'] },
+      product:   { subject: 'minimalist perfume bottle on marble surface', style: '3D render', mood: 'serene', lighting: 'studio lighting', composition: 'close-up portrait', quality: ['product photography','8k','sharp'], negative: ['shadows','dust','imperfections'] },
+      abstract:  { subject: 'flowing liquid metal forms, fractals, sacred geometry', style: 'digital art', mood: 'ethereal', lighting: 'neon lighting', composition: 'symmetrical composition', quality: ['4k','ultra detailed','vibrant colors'], negative: ['text','watermark','ugly'] },
+    }
+  };
+
+  function switchMode(mode) {
+    currentMode = mode;
+    document.querySelectorAll('.mode-tab').forEach((t,i) => t.classList.toggle('active', (i===0 && mode==='chat') || (i===1 && mode==='image')));
+    document.querySelectorAll('.mode-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-' + mode).classList.add('active');
+    buildPrompt();
+  }
+
+  function loadTemplate(mode, key) {
+    const t = templates[mode][key];
+    if (mode === 'chat') {
+      document.getElementById('chat-role').value = t.role;
+      document.getElementById('chat-context').value = t.context;
+      document.getElementById('chat-task').value = t.task;
+      document.getElementById('chat-format').value = t.format;
+      document.getElementById('chat-tone').value = t.tone;
+      document.getElementById('chat-lang').value = t.lang;
+      tags['chat-constraints'] = []; tags['chat-examples'] = [];
+      renderTags('chat-constraints'); renderTags('chat-examples');
+    } else {
+      document.getElementById('img-subject').value = t.subject;
+      document.getElementById('img-style').value = t.style;
+      document.getElementById('img-mood').value = t.mood;
+      document.getElementById('img-lighting').value = t.lighting;
+      document.getElementById('img-composition').value = t.composition;
+      tags['img-quality'] = [...t.quality]; tags['img-negative'] = [...t.negative];
+      renderTags('img-quality'); renderTags('img-negative');
+    }
+    buildPrompt();
+  }
+
+  function handleTagInput(e, key) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const input = document.getElementById(key + '-input');
+      const val = input.value.trim();
+      if (val && !tags[key].includes(val)) {
+        tags[key].push(val);
+        renderTags(key);
+        buildPrompt();
+      }
+      input.value = '';
+    }
+    if (e.key === 'Backspace' && e.target.value === '' && tags[key].length > 0) {
+      tags[key].pop(); renderTags(key); buildPrompt();
+    }
+  }
+
+  function renderTags(key) {
+    const wrap = document.getElementById(key + '-wrap');
+    const input = document.getElementById(key + '-input');
+    const existing = wrap.querySelectorAll('.tag');
+    existing.forEach(t => t.remove());
+    tags[key].forEach((tag, i) => {
+      const el = document.createElement('div');
+      el.className = 'tag';
+      el.innerHTML = tag + '<span class="tag-remove" onclick="removeTag(\'' + key + '\',' + i + ')">✕</span>';
+      wrap.insertBefore(el, input);
+    });
+  }
+
+  function removeTag(key, i) {
+    tags[key].splice(i, 1);
+    renderTags(key); buildPrompt();
+  }
+
+  function buildPrompt() {
+    let prompt = '';
+    if (currentMode === 'chat') {
+      const role    = document.getElementById('chat-role').value.trim();
+      const context = document.getElementById('chat-context').value.trim();
+      const task    = document.getElementById('chat-task').value.trim();
+      const format  = document.getElementById('chat-format').value;
+      const tone    = document.getElementById('chat-tone').value;
+      const lang    = document.getElementById('chat-lang').value;
+      const constraints = tags['chat-constraints'];
+      const examples    = tags['chat-examples'];
+
+      if (role)    prompt += 'You are a ' + role + '.\n\n';
+      if (context) prompt += 'Context: ' + context + '\n\n';
+      if (task)    prompt += task;
+      if (format)  prompt += '\n\nRespond in ' + format + '.';
+      if (tone)    prompt += '\nTone: ' + tone + '.';
+      if (lang)    prompt += '\nWrite in ' + lang + '.';
+      if (constraints.length) prompt += '\n\nConstraints:\n' + constraints.map(c => '- ' + c).join('\n');
+      if (examples.length)    prompt += '\n\nExamples: ' + examples.join(', ') + '.';
+
+    } else {
+      const subject     = document.getElementById('img-subject').value.trim();
+      const style       = document.getElementById('img-style').value;
+      const mood        = document.getElementById('img-mood').value;
+      const lighting    = document.getElementById('img-lighting').value;
+      const composition = document.getElementById('img-composition').value;
+      const quality     = tags['img-quality'];
+      const negative    = tags['img-negative'];
+
+      const parts = [];
+      if (subject)     parts.push(subject);
+      if (style)       parts.push(style);
+      if (mood)        parts.push(mood + ' mood');
+      if (lighting)    parts.push(lighting);
+      if (composition) parts.push(composition);
+      if (quality.length) parts.push(...quality);
+      prompt = parts.join(', ');
+      if (negative.length) prompt += '\n\nNegative prompt: ' + negative.join(', ');
+    }
+
+    const output = document.getElementById('output');
+    const counter = document.getElementById('char-count');
+    if (prompt.trim()) {
+      output.textContent = prompt.trim();
+      output.classList.remove('output-placeholder');
+      counter.textContent = prompt.trim().length + ' characters';
+    } else {
+      output.innerHTML = '<span class="output-placeholder">Your prompt will appear here as you fill in the fields above...</span>';
+      counter.textContent = '';
+    }
+  }
+
+  function copyPrompt() {
+    const text = document.getElementById('output').textContent;
+    if (!text || text.includes('appear here')) return;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('copy-btn');
+      btn.textContent = 'Copied!'; btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  function clearAll() {
+    if (currentMode === 'chat') {
+      ['chat-role','chat-context','chat-task'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('chat-format').value = '';
+      document.getElementById('chat-tone').value = '';
+      document.getElementById('chat-lang').value = '';
+      tags['chat-constraints'] = []; tags['chat-examples'] = [];
+      renderTags('chat-constraints'); renderTags('chat-examples');
+    } else {
+      document.getElementById('img-subject').value = '';
+      document.getElementById('img-style').value = '';
+      document.getElementById('img-mood').value = '';
+      document.getElementById('img-lighting').value = '';
+      document.getElementById('img-composition').value = '';
+      tags['img-quality'] = []; tags['img-negative'] = [];
+      renderTags('img-quality'); renderTags('img-negative');
+    }
+    buildPrompt();
+  }
+
+  function saveToHistory() {
+    const text = document.getElementById('output').textContent;
+    if (!text || text.includes('appear here')) return;
+    const history = getHistory();
+    const entry = { text: text.trim(), mode: currentMode, date: new Date().toLocaleDateString('en-GB') };
+    history.unshift(entry);
+    if (history.length > 20) history.pop();
+    localStorage.setItem('pf_history', JSON.stringify(history));
+    renderHistory();
+  }
+
+  function getHistory() {
+    try { return JSON.parse(localStorage.getItem('pf_history')) || []; }
+    catch { return []; }
+  }
+
+  function renderHistory() {
+    const list = document.getElementById('history-list');
+    const history = getHistory();
+    if (!history.length) {
+      list.innerHTML = '<div class="history-empty">No saved prompts yet.</div>';
+      return;
+    }
+    list.innerHTML = history.map((h, i) =>
+      '<div class="history-item" onclick="loadFromHistory(' + i + ')">' +
+      '<div class="history-text">' + h.text.replace(/</g,'&lt;') + '</div>' +
+      '<div class="history-meta">' + h.mode + ' · ' + h.date + '</div>' +
+      '</div>'
+    ).join('');
+  }
+
+  function loadFromHistory(i) {
+    const h = getHistory()[i];
+    if (!h) return;
+    const output = document.getElementById('output');
+    output.textContent = h.text;
+  }
+
+  function clearHistory() {
+    localStorage.removeItem('pf_history');
+    renderHistory();
+  }
+
+  renderHistory();
+</script>
+</body>
+</html>
