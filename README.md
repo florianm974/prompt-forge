@@ -2,7 +2,7 @@
 
 Advanced AI prompt builder — chatbot & image generation.
 
-**Live →** [florianm974.github.io/promptforge](https://florianm974.github.io/promptforge)
+**Live →** [florianm974.github.io/promptforge](https://florianm974.github.io/prompt-forge)
 
 ## Features
 
