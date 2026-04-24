@@ -143,6 +143,7 @@ function loadTemplate(mode, key) {
     renderTags("img-quality");
     renderTags("img-negative");
   }
+  saveDraft();
   buildPrompt();
 }
 
@@ -157,6 +158,7 @@ function handleTagInput(e) {
       tags[key].push(val);
       renderTags(key);
       buildPrompt();
+      saveDraft();
     }
     input.value = "";
   }
@@ -164,6 +166,7 @@ function handleTagInput(e) {
     tags[key].pop();
     renderTags(key);
     buildPrompt();
+    saveDraft();
   }
 }
 
@@ -310,7 +313,70 @@ function clearAll() {
     renderTags("img-quality");
     renderTags("img-negative");
   }
+  clearDraft();
   buildPrompt();
+}
+
+function saveDraft() {
+  const draft = {
+    mode: currentMode,
+    chat: {
+      role: document.getElementById("chat-role").value,
+      context: document.getElementById("chat-context").value,
+      task: document.getElementById("chat-task").value,
+      format: document.getElementById("chat-format").value,
+      tone: document.getElementById("chat-tone").value,
+      lang: document.getElementById("chat-lang").value,
+      constraints: tags["chat-constraints"],
+      examples: tags["chat-examples"],
+    },
+    image: {
+      subject: document.getElementById("img-subject").value,
+      style: document.getElementById("img-style").value,
+      mood: document.getElementById("img-mood").value,
+      lighting: document.getElementById("img-lighting").value,
+      composition: document.getElementById("img-composition").value,
+      quality: tags["img-quality"],
+      negative: tags["img-negative"],
+    },
+  };
+  localStorage.setItem("pf_draft", JSON.stringify(draft));
+}
+
+function loadDraft() {
+  try {
+    const draft = JSON.parse(localStorage.getItem("pf_draft"));
+    if (!draft) return;
+    currentMode = draft.mode;
+    if (draft.chat) {
+      document.getElementById("chat-role").value = draft.chat.role || "";
+      document.getElementById("chat-context").value = draft.chat.context || "";
+      document.getElementById("chat-task").value = draft.chat.task || "";
+      document.getElementById("chat-format").value = draft.chat.format || "";
+      document.getElementById("chat-tone").value = draft.chat.tone || "";
+      document.getElementById("chat-lang").value = draft.chat.lang || "";
+      tags["chat-constraints"] = draft.chat.constraints || [];
+      tags["chat-examples"] = draft.chat.examples || [];
+      renderTags("chat-constraints");
+      renderTags("chat-examples");
+    } else if (draft.image) {
+      document.getElementById("img-subject").value = draft.image.subject || "";
+      document.getElementById("img-style").value = draft.image.style || "";
+      document.getElementById("img-mood").value = draft.image.mood || "";
+      document.getElementById("img-lighting").value = draft.image.lighting || "";
+      document.getElementById("img-composition").value = draft.image.composition || "";
+      tags["img-quality"] = draft.image.quality || [];
+      tags["img-negative"] = draft.image.negative || [];
+      renderTags("img-quality");
+      renderTags("img-negative");
+    }
+    switchMode(currentMode);
+    buildPrompt();
+  } catch {}
+}
+
+function clearDraft() {
+  localStorage.removeItem("pf_draft");
 }
 
 function saveToHistory() {
@@ -448,7 +514,10 @@ function bindEvents() {
     if (!element) return;
     const eventName =
       element.tagName.toLowerCase() === "select" ? "change" : "input";
-    element.addEventListener(eventName, buildPrompt);
+    element.addEventListener(eventName, () => {
+      buildPrompt();
+      saveDraft();
+    });
   });
 
   document.querySelectorAll(".tags-input").forEach((input) => {
@@ -477,6 +546,20 @@ function bindEvents() {
     .getElementById("clear-history-btn")
     .addEventListener("click", clearHistory);
   document.getElementById("theme-btn").addEventListener("click", toggleTheme);
+
+  document.addEventListener("keydown", (e) => {
+    if (e.ctrlKey && e.key === "Enter") {
+      e.preventDefault();
+      copyPrompt();
+    }
+    if (e.key === "Escape") {
+      clearAll();
+    }
+    if (e.key === "s" && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      saveToHistory();
+    }
+  });
 }
 
 if (localStorage.getItem("pf_theme") === "light") {
@@ -487,6 +570,6 @@ document.addEventListener("DOMContentLoaded", () => {
   bindModeKeyboardNavigation();
   bindEvents();
   renderHistory();
-  switchMode(currentMode);
+  loadDraft();
   syncThemeIcons();
 });
