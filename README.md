@@ -2,7 +2,7 @@
 
 AI prompt builder for chatbots and image generation — no framework, no dependencies.
 
-**Live →** [florianm974.github.io/prompt-forge](https://florianm974.github.io/prompt-forge)
+[![Live →](https://img.shields.io/badge/Live-%E2%86%92-0f766e?style=for-the-badge)](https://florianm974.github.io/prompt-forge)
 
 ---
 

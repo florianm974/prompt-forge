@@ -6,7 +6,7 @@
     <title>Prompt-Forge</title>
     <meta
       name="description"
-      content="Constructeur de prompts IA avance pour chatbot et generation d images."
+      content="Constructeur de prompts IA avancé pour chatbot et génération d'images."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -25,7 +25,7 @@
       class="floral-bg"
       viewBox="0 0 800 900"
       xmlns="http://www.w3.org/2000/svg"
-      fill="white"
+      fill="var(--white)"
       aria-hidden="true"
     >
       <g>
@@ -39,7 +39,7 @@
           y1="166"
           x2="138"
           y2="215"
-          stroke="white"
+          stroke="var(--white)"
           stroke-width="0.8"
         />
         <path d="M138,186 Q126,180 123,188 Q132,193 138,186Z" />
@@ -54,7 +54,7 @@
           y1="84"
           x2="680"
           y2="138"
-          stroke="white"
+          stroke="var(--white)"
           stroke-width="0.8"
         />
         <path d="M680,108 Q665,102 663,112 Q672,116 680,108Z" />
@@ -69,7 +69,7 @@
           y1="755"
           x2="88"
           y2="808"
-          stroke="white"
+          stroke="var(--white)"
           stroke-width="0.8"
         />
       </g>
@@ -81,7 +81,7 @@
           y1="812"
           x2="728"
           y2="860"
-          stroke="white"
+          stroke="var(--white)"
           stroke-width="0.8"
         />
       </g>
@@ -90,7 +90,7 @@
     <div class="app">
       <header class="header">
         <h1 class="logo">Prompt<span>Forge</span></h1>
-        <p class="subtitle">forgez des prompts IA precis — texte & image</p>
+        <p class="subtitle">forgez des prompts IA précis — texte & image</p>
         <div class="divider">
           <div class="divider-line"></div>
           <div class="divider-diamond"></div>
@@ -98,7 +98,7 @@
         </div>
       </header>
 
-      <div class="mode-tabs" role="tablist" aria-label="Mode de generation">
+      <div class="mode-tabs" role="tablist" aria-label="Mode de génération">
         <button
           class="mode-tab active"
           id="tab-chat"
@@ -121,7 +121,7 @@
           tabindex="-1"
           data-mode="image"
         >
-          ◈ &nbsp;Generation d images
+          ◈ &nbsp;Génération d'images
         </button>
       </div>
 
@@ -135,7 +135,7 @@
           aria-hidden="false"
         >
           <div class="panel">
-            <div class="panel-title">Modeles</div>
+            <div class="panel-title">Modèles</div>
             <div class="templates">
               <button
                 class="tpl-btn"
@@ -151,7 +151,7 @@
                 data-template-mode="chat"
                 data-template-key="debug"
               >
-                Deboguer du code
+                Déboguer du code
               </button>
               <button
                 class="tpl-btn"
@@ -159,7 +159,7 @@
                 data-template-mode="chat"
                 data-template-key="write"
               >
-                Rediger un texte
+                Rédiger un texte
               </button>
               <button
                 class="tpl-btn"
@@ -184,7 +184,7 @@
               <input
                 type="text"
                 id="chat-role"
-                placeholder="ex. ingenieur logiciel expert, redacteur creatif..."
+                placeholder="ex. ingénieur logiciel expert, rédacteur créatif..."
               />
             </div>
             <div class="field">
@@ -192,15 +192,15 @@
               <textarea
                 id="chat-context"
                 rows="2"
-                placeholder="Informations de contexte que l IA doit connaitre..."
+                placeholder="Informations de contexte que l'IA doit connaître..."
               ></textarea>
             </div>
             <div class="field">
-              <label for="chat-task">Tache</label>
+              <label for="chat-task">Tâche</label>
               <textarea
                 id="chat-task"
                 rows="3"
-                placeholder="Que veux-tu que l IA fasse ?"
+                placeholder="Que veux-tu que l'IA fasse ?"
               ></textarea>
             </div>
           </div>
@@ -211,14 +211,14 @@
               <label for="chat-format">Format de sortie</label>
               <select id="chat-format">
                 <option value="">— aucun —</option>
-                <option value="des points a puces">Points a puces</option>
-                <option value="une liste numerotee">Liste numerotee</option>
+                <option value="des points a puces">Points à puces</option>
+                <option value="une liste numerotee">Liste numérotée</option>
                 <option value="markdown">Markdown</option>
                 <option value="du texte brut">Texte brut</option>
                 <option value="JSON">JSON</option>
                 <option value="un tableau">Tableau</option>
                 <option value="un guide etape par etape">
-                  Guide pas a pas
+                  Guide pas à pas
                 </option>
               </select>
             </div>
@@ -227,20 +227,20 @@
               <select id="chat-tone">
                 <option value="">— aucun —</option>
                 <option value="professionnel">Professionnel</option>
-                <option value="decontracte">Decontracte</option>
+                <option value="decontracte">Décontracté</option>
                 <option value="technique">Technique</option>
                 <option value="concis">Concis</option>
-                <option value="detaille">Detaille</option>
-                <option value="creatif">Creatif</option>
-                <option value="academique">Academique</option>
+                <option value="detaille">Détaillé</option>
+                <option value="creatif">Créatif</option>
+                <option value="academique">Académique</option>
               </select>
             </div>
             <div class="field">
               <label for="chat-lang">Langue</label>
               <select id="chat-lang">
-                <option value="">— par defaut —</option>
+                <option value="">— par défaut —</option>
                 <option value="anglais">Anglais</option>
-                <option value="francais">Francais</option>
+                <option value="francais">Français</option>
                 <option value="espagnol">Espagnol</option>
                 <option value="allemand">Allemand</option>
                 <option value="italien">Italien</option>
@@ -289,7 +289,7 @@
           aria-hidden="true"
         >
           <div class="panel">
-            <div class="panel-title">Modeles</div>
+            <div class="panel-title">Modèles</div>
             <div class="templates">
               <button
                 class="tpl-btn"
@@ -338,19 +338,19 @@
               <textarea
                 id="img-subject"
                 rows="2"
-                placeholder="Quel est le sujet principal de l image ?"
+                placeholder="Quel est le sujet principal de l'image ?"
               ></textarea>
             </div>
             <div class="field">
               <label for="img-style">Style</label>
               <select id="img-style">
                 <option value="">— aucun —</option>
-                <option value="photorealistic">Photorealiste</option>
-                <option value="digital art">Art numerique</option>
-                <option value="oil painting">Peinture a l huile</option>
+                <option value="photorealistic">Photoréaliste</option>
+                <option value="digital art">Art numérique</option>
+                <option value="oil painting">Peinture à l'huile</option>
                 <option value="watercolor">Aquarelle</option>
                 <option value="anime">Anime</option>
-                <option value="cinematic">Cinematographique</option>
+                <option value="cinematic">Cinématographique</option>
                 <option value="concept art">Art conceptuel</option>
                 <option value="3D render">Rendu 3D</option>
                 <option value="illustration">Illustration</option>
@@ -362,31 +362,31 @@
               <select id="img-mood">
                 <option value="">— aucun —</option>
                 <option value="dramatic">Dramatique</option>
-                <option value="ethereal">Etheree</option>
-                <option value="dark and moody">Sombre et melancolique</option>
+                <option value="ethereal">Éthérée</option>
+                <option value="dark and moody">Sombre et mélancolique</option>
                 <option value="warm and cozy">Chaleureux et cosy</option>
-                <option value="mysterious">Mysterieuse</option>
-                <option value="energetic">Energique</option>
+                <option value="mysterious">Mystérieuse</option>
+                <option value="energetic">Énergique</option>
                 <option value="serene">Sereine</option>
-                <option value="epic">Epique</option>
+                <option value="epic">Épique</option>
               </select>
             </div>
           </div>
 
           <div class="panel">
-            <div class="panel-title">Details techniques</div>
+            <div class="panel-title">Détails techniques</div>
             <div class="field">
-              <label for="img-lighting">Lumiere</label>
+              <label for="img-lighting">Lumière</label>
               <select id="img-lighting">
                 <option value="">— aucun —</option>
-                <option value="golden hour lighting">Heure doree</option>
-                <option value="studio lighting">Eclairage studio</option>
+                <option value="golden hour lighting">Heure dorée</option>
+                <option value="studio lighting">Éclairage studio</option>
                 <option value="dramatic chiaroscuro lighting">
                   Clair-obscur
                 </option>
                 <option value="soft diffused lighting">Douce et diffuse</option>
-                <option value="neon lighting">Neon</option>
-                <option value="moonlight">Lumiere lunaire</option>
+                <option value="neon lighting">Néon</option>
+                <option value="moonlight">Lumière lunaire</option>
                 <option value="backlit">Contre-jour</option>
               </select>
             </div>
@@ -396,14 +396,14 @@
                 <option value="">— aucun —</option>
                 <option value="close-up portrait">Gros plan</option>
                 <option value="wide shot">Plan large</option>
-                <option value="aerial view">Vue aerienne</option>
-                <option value="low angle shot">Contre-plongee</option>
-                <option value="symmetrical composition">Symetrique</option>
-                <option value="rule of thirds">Regle des tiers</option>
+                <option value="aerial view">Vue aérienne</option>
+                <option value="low angle shot">Contre-plongée</option>
+                <option value="symmetrical composition">Symétrique</option>
+                <option value="rule of thirds">Règle des tiers</option>
               </select>
             </div>
             <div class="field">
-              <label>Tags de qualite (Entrer)</label>
+              <label>Tags de qualité (Entrer)</label>
               <div
                 class="tags-wrap"
                 id="img-quality-wrap"
@@ -413,12 +413,12 @@
                   class="tags-input"
                   id="img-quality-input"
                   data-tag-key="img-quality"
-                  placeholder="ex. 8k, tres detaille..."
+                  placeholder="ex. 8k, très détaillé..."
                 />
               </div>
             </div>
             <div class="field">
-              <label>Prompt negatif (Entrer)</label>
+              <label>Prompt négatif (Entrer)</label>
               <div
                 class="tags-wrap"
                 id="img-negative-wrap"
@@ -428,7 +428,7 @@
                   class="tags-input"
                   id="img-negative-input"
                   data-tag-key="img-negative"
-                  placeholder="ex. flou, basse qualite..."
+                  placeholder="ex. flou, basse qualité..."
                 />
               </div>
             </div>
@@ -438,7 +438,7 @@
         <!-- SORTIE -->
         <div class="output-panel">
           <div class="output-header">
-            <span class="output-title">Prompt genere</span>
+            <span class="output-title">Prompt généré</span>
             <div class="output-actions">
               <button class="action-btn" id="clear-btn" type="button">
                 Effacer
@@ -458,7 +458,7 @@
             aria-atomic="true"
           >
             <span class="output-placeholder"
-              >Ton prompt apparaitra ici au fur et a mesure que tu completes les
+              >Ton prompt apparaîtra ici au fur et à mesure que tu complètes les
               champs ci-dessus...</span
             >
           </div>
@@ -476,7 +476,7 @@
         </div>
         <div class="history-list" id="history-list">
           <div class="history-empty">
-            Aucun prompt enregistre pour l instant.
+            Aucun prompt enregistré pour l'instant.
           </div>
         </div>
       </div>
@@ -488,7 +488,7 @@
       id="theme-btn"
       class="theme-btn"
       type="button"
-      aria-label="Basculer le theme"
+      aria-label="Basculer le thème"
     >
       <svg
         id="icon-moon"
