@@ -1,6 +1,6 @@
 let currentMode = "chat";
 const OUTPUT_PLACEHOLDER_TEXT =
-  "Ton prompt apparaitra ici au fur et a mesure que tu completes les champs ci-dessus...";
+  "Ton prompt apparaîtra ici au fur et à mesure que tu complètes les champs ci-dessus...";
 
 const tags = {
   "chat-constraints": [],
@@ -14,7 +14,7 @@ const templates = {
     explain: {
       role: "enseignant expert",
       context: "",
-      task: "Explique [concept] simplement, avec des analogies du monde reel",
+      task: "Explique [concept] simplement, avec des analogies du monde réel",
       format: "du texte brut",
       tone: "decontracte",
       lang: "",
@@ -121,25 +121,26 @@ function switchMode(mode) {
 
 function loadTemplate(mode, key) {
   const t = templates[mode][key];
+  if (!t) return;
   if (mode === "chat") {
-    document.getElementById("chat-role").value = t.role;
-    document.getElementById("chat-context").value = t.context;
-    document.getElementById("chat-task").value = t.task;
-    document.getElementById("chat-format").value = t.format;
-    document.getElementById("chat-tone").value = t.tone;
-    document.getElementById("chat-lang").value = t.lang;
+    document.getElementById("chat-role").value = t.role || "";
+    document.getElementById("chat-context").value = t.context || "";
+    document.getElementById("chat-task").value = t.task || "";
+    document.getElementById("chat-format").value = t.format || "";
+    document.getElementById("chat-tone").value = t.tone || "";
+    document.getElementById("chat-lang").value = t.lang || "";
     tags["chat-constraints"] = [];
     tags["chat-examples"] = [];
     renderTags("chat-constraints");
     renderTags("chat-examples");
   } else {
-    document.getElementById("img-subject").value = t.subject;
-    document.getElementById("img-style").value = t.style;
-    document.getElementById("img-mood").value = t.mood;
-    document.getElementById("img-lighting").value = t.lighting;
-    document.getElementById("img-composition").value = t.composition;
-    tags["img-quality"] = [...t.quality];
-    tags["img-negative"] = [...t.negative];
+    document.getElementById("img-subject").value = t.subject || "";
+    document.getElementById("img-style").value = t.style || "";
+    document.getElementById("img-mood").value = t.mood || "";
+    document.getElementById("img-lighting").value = t.lighting || "";
+    document.getElementById("img-composition").value = t.composition || "";
+    tags["img-quality"] = [...(t.quality || [])];
+    tags["img-negative"] = [...(t.negative || [])];
     renderTags("img-quality");
     renderTags("img-negative");
   }
@@ -173,6 +174,7 @@ function handleTagInput(e) {
 function renderTags(key) {
   const wrap = document.getElementById(key + "-wrap");
   const input = document.getElementById(key + "-input");
+  if (!wrap || !input) return;
   const existing = wrap.querySelectorAll(".tag");
   existing.forEach((t) => t.remove());
   tags[key].forEach((tag, i) => {
@@ -213,9 +215,9 @@ function buildPrompt() {
     if (role) prompt += "Tu es " + role + ".\n\n";
     if (context) prompt += "Contexte : " + context + "\n\n";
     if (task) prompt += task;
-    if (format) prompt += "\n\nReponds sous la forme de " + format + ".";
+    if (format) prompt += "\n\nRéponds sous la forme de " + format + ".";
     if (tone) prompt += "\nTon : " + tone + ".";
-    if (lang) prompt += "\nEcris en " + lang + ".";
+    if (lang) prompt += "\nÉcris en " + lang + ".";
     if (constraints.length)
       prompt +=
         "\n\nContraintes :\n" + constraints.map((c) => "- " + c).join("\n");
@@ -239,7 +241,7 @@ function buildPrompt() {
     if (quality.length) parts.push(...quality);
     prompt = parts.join(", ");
     if (negative.length)
-      prompt += "\n\nPrompt negatif : " + negative.join(", ");
+      prompt += "\n\nPrompt négatif : " + negative.join(", ");
   }
 
   const output = document.getElementById("output");
@@ -247,7 +249,7 @@ function buildPrompt() {
   if (prompt.trim()) {
     output.textContent = prompt.trim();
     output.classList.remove("output-placeholder");
-    counter.textContent = prompt.trim().length + " caracteres";
+    counter.textContent = prompt.trim().length + " caractères";
   } else {
     output.textContent = OUTPUT_PLACEHOLDER_TEXT;
     output.classList.add("output-placeholder");
@@ -275,7 +277,7 @@ async function copyPrompt() {
   if (!text || !outputHasPrompt()) return;
   try {
     await navigator.clipboard.writeText(text);
-    setCopyButtonState("Copie !", true);
+    setCopyButtonState("Copié !", true);
   } catch {
     const fallback = document.createElement("textarea");
     fallback.value = text;
@@ -286,7 +288,7 @@ async function copyPrompt() {
     fallback.select();
     const copied = document.execCommand("copy");
     document.body.removeChild(fallback);
-    setCopyButtonState(copied ? "Copie !" : "Echec copie", copied);
+    setCopyButtonState(copied ? "Copié !" : "Échec copie", copied);
   }
 }
 
@@ -303,11 +305,13 @@ function clearAll() {
     renderTags("chat-constraints");
     renderTags("chat-examples");
   } else {
-    document.getElementById("img-subject").value = "";
-    document.getElementById("img-style").value = "";
-    document.getElementById("img-mood").value = "";
-    document.getElementById("img-lighting").value = "";
-    document.getElementById("img-composition").value = "";
+    [
+      "img-subject",
+      "img-style",
+      "img-mood",
+      "img-lighting",
+      "img-composition",
+    ].forEach((id) => (document.getElementById(id).value = ""));
     tags["img-quality"] = [];
     tags["img-negative"] = [];
     renderTags("img-quality");
@@ -347,7 +351,7 @@ function loadDraft() {
   try {
     const draft = JSON.parse(localStorage.getItem("pf_draft"));
     if (!draft) return;
-    currentMode = draft.mode;
+    currentMode = draft.mode || "chat";
     if (draft.chat) {
       document.getElementById("chat-role").value = draft.chat.role || "";
       document.getElementById("chat-context").value = draft.chat.context || "";
@@ -359,12 +363,15 @@ function loadDraft() {
       tags["chat-examples"] = draft.chat.examples || [];
       renderTags("chat-constraints");
       renderTags("chat-examples");
-    } else if (draft.image) {
+    }
+    if (draft.image) {
       document.getElementById("img-subject").value = draft.image.subject || "";
       document.getElementById("img-style").value = draft.image.style || "";
       document.getElementById("img-mood").value = draft.image.mood || "";
-      document.getElementById("img-lighting").value = draft.image.lighting || "";
-      document.getElementById("img-composition").value = draft.image.composition || "";
+      document.getElementById("img-lighting").value =
+        draft.image.lighting || "";
+      document.getElementById("img-composition").value =
+        draft.image.composition || "";
       tags["img-quality"] = draft.image.quality || [];
       tags["img-negative"] = draft.image.negative || [];
       renderTags("img-quality");
@@ -372,7 +379,7 @@ function loadDraft() {
     }
     switchMode(currentMode);
     buildPrompt();
-  } catch {}
+  } catch (e) {}
 }
 
 function clearDraft() {
@@ -410,7 +417,7 @@ function renderHistory() {
   if (!history.length) {
     const empty = document.createElement("div");
     empty.className = "history-empty";
-    empty.textContent = "Aucun prompt enregistre pour l instant.";
+    empty.textContent = "Aucun prompt enregistré pour l'instant.";
     list.appendChild(empty);
     return;
   }
@@ -442,7 +449,7 @@ function loadFromHistory(i) {
   const counter = document.getElementById("char-count");
   output.textContent = h.text;
   output.classList.remove("output-placeholder");
-  counter.textContent = h.text.length + " caracteres";
+  counter.textContent = h.text.length + " caractères";
 }
 
 function clearHistory() {
@@ -452,28 +459,25 @@ function clearHistory() {
 
 function toggleTheme() {
   const isLight = document.documentElement.classList.toggle("light");
-  localStorage.setItem("pf_theme", isLight ? "light" : "dark");
+  try {
+    localStorage.setItem("pf_theme", isLight ? "light" : "dark");
+  } catch {}
   syncThemeIcons();
 }
 
 function syncThemeIcons() {
   const isLight = document.documentElement.classList.contains("light");
-  document.getElementById("icon-moon").style.display = isLight
-    ? "none"
-    : "block";
-  document.getElementById("icon-sun").style.display = isLight
-    ? "block"
-    : "none";
+  const moon = document.getElementById("icon-moon");
+  const sun = document.getElementById("icon-sun");
+  if (moon) moon.style.display = isLight ? "none" : "block";
+  if (sun) sun.style.display = isLight ? "block" : "none";
 }
 
 function bindModeKeyboardNavigation() {
   const tabs = [...document.querySelectorAll(".mode-tab")];
   tabs.forEach((tab, index) => {
     tab.addEventListener("keydown", (event) => {
-      if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") {
-        return;
-      }
-
+      if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
       event.preventDefault();
       const nextIndex =
         event.key === "ArrowRight"
@@ -484,6 +488,67 @@ function bindModeKeyboardNavigation() {
       switchMode(nextTab.dataset.mode);
     });
   });
+}
+
+function exportPrompt() {
+  const text = document.getElementById("output").textContent;
+  if (!text || !outputHasPrompt()) return;
+  const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "prompt.txt";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function buildShareURL() {
+  const params = new URLSearchParams();
+  params.set("mode", currentMode);
+  if (currentMode === "chat") {
+    params.set("role", document.getElementById("chat-role").value || "");
+    params.set("context", document.getElementById("chat-context").value || "");
+    params.set("task", document.getElementById("chat-task").value || "");
+    params.set("format", document.getElementById("chat-format").value || "");
+    params.set("tone", document.getElementById("chat-tone").value || "");
+    params.set("lang", document.getElementById("chat-lang").value || "");
+    if (tags["chat-constraints"]?.length)
+      params.set("constraints", tags["chat-constraints"].join("||"));
+    if (tags["chat-examples"]?.length)
+      params.set("examples", tags["chat-examples"].join("||"));
+  } else {
+    params.set("subject", document.getElementById("img-subject").value || "");
+    params.set("style", document.getElementById("img-style").value || "");
+    params.set("mood", document.getElementById("img-mood").value || "");
+    params.set("lighting", document.getElementById("img-lighting").value || "");
+    params.set(
+      "composition",
+      document.getElementById("img-composition").value || "",
+    );
+    if (tags["img-quality"]?.length)
+      params.set("quality", tags["img-quality"].join("||"));
+    if (tags["img-negative"]?.length)
+      params.set("negative", tags["img-negative"].join("||"));
+  }
+  const base = window.location.origin + window.location.pathname;
+  return base + "?" + params.toString();
+}
+
+async function sharePrompt() {
+  const url = buildShareURL();
+  try {
+    await navigator.clipboard.writeText(url);
+    const btn = document.getElementById("share-btn");
+    const prev = btn ? btn.textContent : "Partager";
+    if (btn) btn.textContent = "Lien copié";
+    setTimeout(() => {
+      if (btn) btn.textContent = prev;
+    }, 2000);
+  } catch (err) {
+    window.prompt("Copiez ce lien:", url);
+  }
 }
 
 function bindEvents() {
@@ -533,19 +598,30 @@ function bindEvents() {
     });
   });
 
-  document.getElementById("history-list").addEventListener("click", (event) => {
-    const item = event.target.closest(".history-item");
-    if (!item) return;
-    loadFromHistory(Number(item.dataset.index));
-  });
+  const historyList = document.getElementById("history-list");
+  if (historyList) {
+    historyList.addEventListener("click", (event) => {
+      const item = event.target.closest(".history-item");
+      if (!item) return;
+      loadFromHistory(Number(item.dataset.index));
+    });
+  }
 
-  document.getElementById("clear-btn").addEventListener("click", clearAll);
-  document.getElementById("save-btn").addEventListener("click", saveToHistory);
-  document.getElementById("copy-btn").addEventListener("click", copyPrompt);
-  document
-    .getElementById("clear-history-btn")
-    .addEventListener("click", clearHistory);
-  document.getElementById("theme-btn").addEventListener("click", toggleTheme);
+  const clearBtn = document.getElementById("clear-btn");
+  if (clearBtn) clearBtn.addEventListener("click", clearAll);
+  const saveBtn = document.getElementById("save-btn");
+  if (saveBtn) saveBtn.addEventListener("click", saveToHistory);
+  const exportBtn = document.getElementById("export-btn");
+  if (exportBtn) exportBtn.addEventListener("click", exportPrompt);
+  const shareBtn = document.getElementById("share-btn");
+  if (shareBtn) shareBtn.addEventListener("click", sharePrompt);
+  const copyBtn = document.getElementById("copy-btn");
+  if (copyBtn) copyBtn.addEventListener("click", copyPrompt);
+  const clearHistoryBtn = document.getElementById("clear-history-btn");
+  if (clearHistoryBtn) clearHistoryBtn.addEventListener("click", clearHistory);
+
+  const themeBtn = document.getElementById("theme-btn");
+  if (themeBtn) themeBtn.addEventListener("click", toggleTheme);
 
   document.addEventListener("keydown", (e) => {
     if (e.ctrlKey && e.key === "Enter") {
