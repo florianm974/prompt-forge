@@ -1,58 +1,60 @@
 # Prompt-Forge
 
-AI prompt builder for chatbots and image generation — no framework, no dependencies.
+Constructeur de prompts IA pour chatbot et génération d'images — sans framework, sans dépendances.
 
 [![Live →](https://img.shields.io/badge/Live-%E2%86%92-0f766e?style=for-the-badge)](https://florianm974.github.io/prompt-forge)
 
 ---
 
-## Overview
+## Présentation
 
-> A structured tool for crafting effective prompts, whether for a language model or an image generation model.
+> Un outil structuré pour concevoir des prompts efficaces, que ce soit pour un modèle de langage ou un modèle de génération d'images.
 
 ---
 
-## Features
+## Fonctionnalités
 
-| Feature                | Details                                                                                                                                          |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **2 modes**            | Chatbot prompt builder and image prompt builder                                                                                                  |
-| **Live preview**       | Prompt updates as you fill in the fields                                                                                                         |
-| **Templates**          | 5 chatbot templates (explain, debug, write, analyze, translate) and 5 image templates (portrait, landscape, concept art, product shot, abstract) |
-| **Dynamic tags**       | Constraints, examples, quality tags, negative prompt — add with `Enter`, remove with one click                                                   |
-| **Local history**      | Saves up to 20 prompts in `localStorage`, reload in one click                                                                                    |
-| **One-click copy**     | With `execCommand` fallback for broader compatibility                                                                                            |
-| **Light / dark theme** | Preference stored locally                                                                                                                        |
-| **Accessibility**      | ARIA tabs, arrow key navigation, visible focus                                                                                                   |
+| Fonctionnalité          | Détails                                                                                                                                               |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **2 modes**             | Constructeur de prompt chatbot et constructeur de prompt image                                                                                        |
+| **Aperçu en direct**    | Le prompt se met à jour au fur et à mesure que tu remplis les champs                                                                                  |
+| **Modèles**             | 5 modèles chatbot (expliquer, déboguer, rédiger, analyser, traduire) et 5 modèles image (portrait, paysage, art conceptuel, packshot, abstrait)       |
+| **Tags dynamiques**     | Contraintes, exemples, tags qualité, prompt négatif — ajout avec `Entrée`, suppression d'un clic                                                      |
+| **Historique local**    | Sauvegarde jusqu'à 20 prompts dans `localStorage`, recharge en un clic                                                                                |
+| **Copie en un clic**    | Avec fallback `execCommand` pour une compatibilité élargie                                                                                            |
+| **Export .txt**         | Télécharge le prompt généré en fichier texte                                                                                                          |
+| **Partage par URL**     | Partage le prompt via une URL encodée                                                                                                                 |
+| **Thème clair / sombre**| Préférence stockée localement                                                                                                                         |
+| **Accessibilité**       | Onglets ARIA, navigation aux flèches, focus visible                                                                                                   |
 
 ---
 
 ## Stack
 
-Intentionally simple:
+Volontairement simple :
 
-- **HTML / CSS / JavaScript** — no framework, no dependencies
-- Separate files: [`index.html`](index.html), [`styles.css`](styles.css), [`app.js`](app.js)
-- Hosted on **GitHub Pages**
-
----
-
-## Usage
-
-1. Open the [live page](https://florianm974.github.io/prompt-forge) or clone the repo
-2. Choose **Chatbot** or **Image generation** mode
-3. Load a template or fill in the fields manually
-4. Add tags if needed
-5. Copy or save the generated prompt
+- **HTML / CSS / JavaScript** — sans framework, sans dépendances
+- Fichiers séparés : [`index.html`](index.html), [`styles.css`](styles.css), [`app.js`](app.js)
+- Hébergé sur **GitHub Pages**
 
 ---
 
-## Local usage
+## Utilisation
+
+1. Ouvre la [page live](https://florianm974.github.io/prompt-forge) ou clone le dépôt
+2. Choisis le mode **Chatbot** ou **Génération d'images**
+3. Charge un modèle ou remplis les champs manuellement
+4. Ajoute des tags si nécessaire
+5. Copie ou enregistre le prompt généré
+
+---
+
+## Utilisation en local
 
 ```bash
 git clone https://github.com/florianm974/prompt-forge.git
 cd prompt-forge
-# open index.html in your browser — no installation required
+# ouvre index.html dans ton navigateur — aucune installation requise
 ```
 
 ---
@@ -61,29 +63,27 @@ cd prompt-forge
 
 ```
 prompt-forge/
-├── index.html    # Structure and markup
-├── styles.css    # Themes, layout, components
-└── app.js        # Logic: modes, templates, tags, history
+├── index.html    # Structure et balisage
+├── styles.css    # Thèmes, layout, composants
+└── app.js        # Logique : modes, modèles, tags, historique
 ```
 
 ---
 
 ## Notes
 
-- The interface is in French
-- The language of the generated prompt is configurable in chatbot mode
-- History is stored locally in the browser (`localStorage`) — no data is sent to any server
+- L'interface est en français
+- La langue du prompt généré est configurable en mode chatbot
+- L'historique est stocké localement dans le navigateur (`localStorage`) — aucune donnée n'est envoyée à un serveur
 
 ---
 
 ## Roadmap
 
-- [ ] Export prompt as `.txt`
-- [ ] Share prompt via URL (encoded parameters)
-- [ ] Comparison mode to test multiple prompt variants
+- [ ] Mode comparaison pour tester plusieurs variantes de prompt
 
 ---
 
-## License
+## Licence
 
-MIT — see [LICENSE](LICENSE)
+MIT — voir [LICENSE](LICENSE)
