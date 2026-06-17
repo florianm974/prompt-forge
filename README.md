@@ -80,9 +80,7 @@ prompt-forge/
 
 ## Roadmap
 
-- [ ] Export prompt as `.txt`
-- [ ] Share prompt via URL (encoded parameters)
-- [ ] Comparison mode to test multiple prompt variants
+- [ ] Mode comparaison pour tester plusieurs variantes de prompt
 
 ---
 
