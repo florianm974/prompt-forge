@@ -2,7 +2,7 @@
 
 Constructeur de prompts IA pour chatbot et génération d'images — sans framework, sans dépendances.
 
-[![Live →](https://img.shields.io/badge/Live-%E2%86%92-0f766e?style=for-the-badge)](https://florianm974.github.io/prompt-forge)
+**Live →** [florianm974.github.io/prompt-forge]([https://florianm974.github.io/prompt-forge](https://florianm974.github.io/prompt-forge))
 
 ---
 
