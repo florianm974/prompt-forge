@@ -2,7 +2,7 @@
 
 Constructeur de prompts IA pour chatbot et génération d'images — sans framework, sans dépendances.
 
-**Live →** [[florianm974.github.io/florian-links](https://florianm974.github.io/florian-links)]
+**Live →** [florianm974.github.io/florian-links](https://florianm974.github.io/florian-links)
 
 ---
 
