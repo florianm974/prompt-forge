@@ -14,18 +14,18 @@ Constructeur de prompts IA pour chatbot et génération d'images — sans framew
 
 ## Fonctionnalités
 
-| Fonctionnalité          | Détails                                                                                                                                               |
-| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **2 modes**             | Constructeur de prompt chatbot et constructeur de prompt image                                                                                        |
-| **Aperçu en direct**    | Le prompt se met à jour au fur et à mesure que tu remplis les champs                                                                                  |
-| **Modèles**             | 5 modèles chatbot (expliquer, déboguer, rédiger, analyser, traduire) et 5 modèles image (portrait, paysage, art conceptuel, packshot, abstrait)       |
-| **Tags dynamiques**     | Contraintes, exemples, tags qualité, prompt négatif — ajout avec `Entrée`, suppression d'un clic                                                      |
-| **Historique local**    | Sauvegarde jusqu'à 20 prompts dans `localStorage`, recharge en un clic                                                                                |
-| **Copie en un clic**    | Avec fallback `execCommand` pour une compatibilité élargie                                                                                            |
-| **Export .txt**         | Télécharge le prompt généré en fichier texte                                                                                                          |
-| **Partage par URL**     | Partage le prompt via une URL encodée                                                                                                                 |
-| **Thème clair / sombre**| Préférence stockée localement                                                                                                                         |
-| **Accessibilité**       | Onglets ARIA, navigation aux flèches, focus visible                                                                                                   |
+| Fonctionnalité           | Détails                                                                                                                                         |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| **2 modes**              | Constructeur de prompt chatbot et constructeur de prompt image                                                                                  |
+| **Aperçu en direct**     | Le prompt se met à jour au fur et à mesure que tu remplis les champs                                                                            |
+| **Modèles**              | 5 modèles chatbot (expliquer, déboguer, rédiger, analyser, traduire) et 5 modèles image (portrait, paysage, art conceptuel, packshot, abstrait) |
+| **Tags dynamiques**      | Contraintes, exemples, tags qualité, prompt négatif — ajout avec `Entrée`, suppression d'un clic                                                |
+| **Historique local**     | Sauvegarde jusqu'à 20 prompts dans `localStorage`, recharge en un clic                                                                          |
+| **Copie en un clic**     | Avec fallback `execCommand` pour une compatibilité élargie                                                                                      |
+| **Export .txt**          | Télécharge le prompt généré en fichier texte                                                                                                    |
+| **Partage par URL**      | Partage le prompt via une URL encodée                                                                                                           |
+| **Thème clair / sombre** | Préférence stockée localement                                                                                                                   |
+| **Accessibilité**        | Onglets ARIA, navigation aux flèches, focus visible                                                                                             |
 
 ---
 
@@ -80,7 +80,9 @@ prompt-forge/
 
 ## Roadmap
 
-- [ ] Mode comparaison pour tester plusieurs variantes de prompt
+- [ ] Export prompt as `.txt`
+- [ ] Share prompt via URL (encoded parameters)
+- [ ] Comparison mode to test multiple prompt variants
 
 ---
 
