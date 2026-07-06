@@ -8,7 +8,7 @@ Constructeur de prompts IA pour chatbot et génération d'images — sans framew
 
 ## Présentation
 
-> Un outil structuré pour concevoir des prompts efficaces, que ce soit pour un modèle de langage ou un modèle de génération d'images.
+> Construis des prompts pour chatbot ou génération d'images, proprement et sans prise de tête.
 
 ---
 
@@ -21,19 +21,19 @@ Constructeur de prompts IA pour chatbot et génération d'images — sans framew
 | **Modèles**              | 5 modèles chatbot (expliquer, déboguer, rédiger, analyser, traduire) et 5 modèles image (portrait, paysage, art conceptuel, packshot, abstrait) |
 | **Tags dynamiques**      | Contraintes, exemples, tags qualité, prompt négatif — ajout avec `Entrée`, suppression d'un clic                                                |
 | **Historique local**     | Sauvegarde jusqu'à 20 prompts dans `localStorage`, recharge en un clic                                                                          |
-| **Copie en un clic**     | Avec fallback `execCommand` pour une compatibilité élargie                                                                                      |
+| **Copie en un clic**     | Fonctionne même si le navigateur galère avec l'API Clipboard                                                                                    |
 | **Export .txt**          | Télécharge le prompt généré en fichier texte                                                                                                    |
 | **Partage par URL**      | Partage le prompt via une URL encodée                                                                                                           |
-| **Thème clair / sombre** | Préférence stockée localement                                                                                                                   |
+| **Thème clair / sombre** | Sauvegardé dans le navigateur                                                                                                                   |
 | **Accessibilité**        | Onglets ARIA, navigation aux flèches, focus visible                                                                                             |
 
 ---
 
 ## Stack
 
-Volontairement simple :
+Rien que du vanilla :
 
-- **HTML / CSS / JavaScript** — sans framework, sans dépendances
+- **HTML / CSS / JavaScript** — vanilla
 - Fichiers séparés : [`index.html`](index.html), [`styles.css`](styles.css), [`app.js`](app.js)
 - Hébergé sur **GitHub Pages**
 
@@ -74,7 +74,7 @@ prompt-forge/
 
 - L'interface est en français
 - La langue du prompt généré est configurable en mode chatbot
-- L'historique est stocké localement dans le navigateur (`localStorage`) — aucune donnée n'est envoyée à un serveur
+- L'historique est en `localStorage` — rien ne part sur le réseau
 
 ---
 
