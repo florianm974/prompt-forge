@@ -3,35 +3,35 @@
 }
 
 :root {
-  --bg: #06050c;
-  --surface: #0d0b18;
-  --surface2: #141120;
-  --gold: #c9a96e;
-  --gold-light: #e6c98e;
-  --gold-glow: rgba(201,169,110,.09);
-  --purple: #7040a8;
-  --purple-soft: #9b70d0;
-  --text: #ddd5c8;
-  --text-soft: #9a9088;
-  --text-muted: #5a5568;
-  --border: rgba(201,169,110,.2);
-  --border-soft: rgba(201,169,110,.08);
+  --bg: #0a0a0a;
+  --surface: #141414;
+  --surface2: #1d1d1d;
+  --gold: #ff3d3d;
+  --gold-light: #ff6b6b;
+  --gold-glow: rgba(255,61,61,.14);
+  --purple: #ff3d3d;
+  --purple-soft: #ff6b6b;
+  --text: #f4f4f4;
+  --text-soft: #a3a3a3;
+  --text-muted: #6e6e6e;
+  --border: rgba(255,255,255,.16);
+  --border-soft: rgba(255,255,255,.08);
 }
 
 html.light {
-  --bg: #f5f2ed;
-  --surface: #ebe7e0;
-  --surface2: #dedad3;
-  --gold: #b8944e;
-  --gold-light: #8a6f3a;
-  --gold-glow: rgba(184,148,78,.08);
-  --purple: #7040a8;
-  --purple-soft: #8a5cc0;
-  --text: #1a1815;
-  --text-soft: rgba(26,24,21,.55);
-  --text-muted: rgba(26,24,21,.45);
-  --border: rgba(26,24,21,.15);
-  --border-soft: rgba(26,24,21,.08);
+  --bg: #f4f4f4;
+  --surface: #ececec;
+  --surface2: #e2e2e2;
+  --gold: #dc2626;
+  --gold-light: #b91c1c;
+  --gold-glow: rgba(220,38,38,.12);
+  --purple: #dc2626;
+  --purple-soft: #b91c1c;
+  --text: #111;
+  --text-soft: #444;
+  --text-muted: #777;
+  --border: rgba(0,0,0,.16);
+  --border-soft: rgba(0,0,0,.08);
 }
 
 html { scroll-behavior: smooth; }
@@ -40,7 +40,7 @@ body {
   background: var(--bg);
   color: var(--text);
   transition: background 0.4s, color 0.4s;
-  font-family: "Cormorant Garamond", Georgia, serif;
+  font-family: "Space Grotesk", system-ui, sans-serif;
   min-height: 100vh;
   position: relative;
   overflow-x: hidden;
@@ -50,9 +50,10 @@ body::before {
   content: "";
   position: fixed;
   inset: 0;
-  background:
-    radial-gradient(ellipse 100% 70% at 10% 0%, rgba(112,64,168,.09) 0%, transparent 55%),
-    radial-gradient(ellipse 80% 60% at 90% 100%, rgba(201,169,110,.05) 0%, transparent 50%);
+  background-image: radial-gradient(var(--border) 1px, transparent 1.4px);
+  background-size: 30px 30px;
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 0%, #000 0%, transparent 75%);
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 0%, #000 0%, transparent 75%);
   pointer-events: none;
   z-index: 0;
 }
@@ -74,9 +75,9 @@ body::before {
 }
 
 .logo {
-  font-family: "Cinzel", serif;
+  font-family: "DotGothic16", monospace;
   font-size: 28px;
-  font-weight: 600;
+  font-weight: 400;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--gold-light);
@@ -87,7 +88,6 @@ body::before {
 
 .subtitle {
   font-size: 14px;
-  font-style: italic;
   font-weight: 300;
   color: var(--text-soft);
   letter-spacing: 0.05em;
@@ -124,7 +124,7 @@ body::before {
   padding: 12px 20px;
   background: transparent;
   border: none;
-  font-family: "Cinzel", serif;
+  font-family: "JetBrains Mono", monospace;
   font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -166,7 +166,7 @@ body::before {
 .panel:hover { border-color: rgba(201,169,110,.25); }
 
 .panel-title {
-  font-family: "Cinzel", serif;
+  font-family: "JetBrains Mono", monospace;
   font-size: 10px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -194,9 +194,8 @@ body::before {
   background: var(--surface2);
   border: 1px solid var(--border-soft);
   color: var(--text);
-  font-family: "Cormorant Garamond", serif;
+  font-family: "Space Grotesk", system-ui, sans-serif;
   font-size: 14px;
-  font-style: italic;
   padding: 9px 12px;
   outline: none;
   transition: border-color .25s;
@@ -232,7 +231,6 @@ body::before {
   border: 1px solid var(--border);
   padding: 2px 8px;
   font-size: 12px;
-  font-style: italic;
   color: var(--text);
   display: flex;
   align-items: center;
@@ -257,9 +255,8 @@ body::before {
   border: none;
   outline: none;
   color: var(--text);
-  font-family: "Cormorant Garamond", serif;
+  font-family: "Space Grotesk", system-ui, sans-serif;
   font-size: 14px;
-  font-style: italic;
   flex: 1;
   min-width: 80px;
   padding: 2px 0;
@@ -279,7 +276,7 @@ body::before {
   background: transparent;
   border: 1px solid var(--border-soft);
   padding: 5px 12px;
-  font-family: "Cinzel", serif;
+  font-family: "JetBrains Mono", monospace;
   font-size: 9px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -311,7 +308,7 @@ body::before {
 }
 
 .output-title {
-  font-family: "Cinzel", serif;
+  font-family: "JetBrains Mono", monospace;
   font-size: 10px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -324,7 +321,7 @@ body::before {
   background: transparent;
   border: 1px solid var(--border-soft);
   padding: 6px 14px;
-  font-family: "Cinzel", serif;
+  font-family: "JetBrains Mono", monospace;
   font-size: 9px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -348,7 +345,6 @@ body::before {
   border: 1px solid var(--border-soft);
   padding: 1.2rem;
   font-size: 15px;
-  font-style: italic;
   color: var(--text);
   line-height: 1.8;
   min-height: 100px;
@@ -372,7 +368,7 @@ body::before {
 }
 
 .section-title {
-  font-family: "Cinzel", serif;
+  font-family: "JetBrains Mono", monospace;
   font-size: 10px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -407,7 +403,6 @@ body::before {
 
 .history-text {
   font-size: 13px;
-  font-style: italic;
   color: var(--text-soft);
   flex: 1;
   overflow: hidden;
@@ -419,7 +414,7 @@ body::before {
 }
 
 .history-meta {
-  font-family: "Cinzel", serif;
+  font-family: "JetBrains Mono", monospace;
   font-size: 9px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -430,7 +425,6 @@ body::before {
 
 .history-empty {
   font-size: 13px;
-  font-style: italic;
   color: var(--text-muted);
   text-align: center;
   padding: 1.5rem;
@@ -442,7 +436,6 @@ body::before {
   color: var(--text-muted);
   text-align: right;
   margin-top: 4px;
-  font-style: italic;
 }
 
 /* ── Mode panels ── */
