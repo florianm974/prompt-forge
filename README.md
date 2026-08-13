@@ -1,4 +1,4 @@
-# Prompt-Forge
+# Prompt Forge
 
 Constructeur de prompts IA pour chatbot et génération d'images — sans framework, sans dépendances.
 
